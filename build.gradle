@@ -1,0 +1,382 @@
+plugins {
+    id 'java'
+    id 'java-library' // <<< api vs implementation
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+var commonProject = project(':common')
+var jpaCoreProject = project(jpaCoreModule)
+
+// including: root project
+allprojects {
+    group = 'com.example'
+    version = '0.0.1-SNAPSHOT'
+
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    ext {
+        jjwtVersion = '0.11.5'
+        mapStructVersion = '1.5.3.Final'
+        mapStructBindingVersion = '0.2.0'
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+        configureEach {
+            // exclude LOGBACK
+            exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        google()
+    }
+}
+
+// using:
+subprojects {
+    dependencies {
+        implementation 'org.springframework:spring-web'
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'com.fasterxml.jackson.core:jackson-annotations'
+        implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+        // Pageable
+        implementation 'org.springframework.data:spring-data-commons'
+
+        // Lombok
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+    }
+
+    bootJar {
+        enabled = false
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}
+
+project (':common') {
+}
+
+project(jpaCoreModule) {
+    dependencies {
+        implementation commonProject
+        // api vs implementation <<< 찾아 보시면 됩니다.
+        api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+//project(jwtParserCoreModule) {
+//    dependencies {
+//        implementation commonProject
+//        implementation project(jwtPropertiesModule)
+//
+//        // JWT
+//        implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+//        implementation "io.jsonwebtoken:jjwt-gson:${jjwtVersion}"
+//
+//        // Map Struct
+//        implementation "org.mapstruct:mapstruct:$mapStructVersion"
+//        annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
+//        annotationProcessor "org.projectlombok:lombok-mapstruct-binding:$mapStructBindingVersion"
+//    }
+//}
+
+project(jwtPropertiesModule) {
+    dependencies {
+        implementation commonProject
+
+        // JWT
+        implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+        implementation "io.jsonwebtoken:jjwt-gson:${jjwtVersion}"
+    }
+}
+
+project(jwtProviderCoreModule) {
+    dependencies {
+        implementation commonProject
+        api project(jwtPropertiesModule)
+
+        // JWT
+        implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+        implementation "io.jsonwebtoken:jjwt-gson:${jjwtVersion}"
+    }
+}
+
+project(secureRandomModule) {
+    dependencies {
+        implementation commonProject
+    }
+}
+
+project(webMvcCorsConfigModule) {
+    dependencies {
+        implementation commonProject
+        implementation 'org.springframework:spring-webmvc'
+    }
+}
+
+project(healthCheckModule) {
+    dependencies {
+        implementation commonProject
+    }
+}
+
+// ====================================================================================================== Authentication
+
+project(authenticationServiceModule) { // <<< 실행 애플리케이션 있는 모듈. 스캔 대상은 모두 여기 의존성에 추가.
+    dependencies {
+        implementation commonProject
+        implementation project(jwtProviderCoreModule)
+        implementation project(secureRandomModule)
+        implementation project(webMvcCorsConfigModule)
+        implementation project(healthCheckModule)
+
+        implementation project(authenticationDomainModule)
+        implementation project(authenticationReadModelsModule)
+        implementation project(authenticationExceptionModule)
+        implementation project(authenticationApplicationModule)
+        implementation project(authenticationWebAdapterModule)
+        implementation project(authenticationRdbAdapterModule)
+        implementation project(authenticationRedisAdapterModule)
+        implementation project(authenticationProfileClientAdapterModule)
+
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // Spring Cloud dependency-management
+        implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.0")
+
+        // Feign Client TODO 모듈화
+        implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+        // Consul
+        implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+    }
+
+    bootJar {
+        enabled = true // <<< 실행 애플리케이션 있는 모듈만.
+    }
+}
+
+project(authenticationApplicationModule) {
+    dependencies {
+        implementation commonProject
+        api project(secureRandomModule)
+        api project(jwtProviderCoreModule)
+        api project(authenticationDomainModule)
+        api project(authenticationExceptionModule)
+        api project(authenticationReadModelsModule)
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // password encoder
+        implementation 'org.springframework.security:spring-security-crypto'
+
+        // jwt
+        implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+        implementation 'io.jsonwebtoken:jjwt-gson:0.11.5'
+    }
+}
+
+project(authenticationRdbAdapterModule) {
+    dependencies {
+        implementation commonProject
+        implementation jpaCoreProject
+        implementation project(authenticationApplicationModule)
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        runtimeOnly 'org.postgresql:postgresql'
+
+        // Map Struct
+        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+        annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+        // Flyway
+        implementation 'org.flywaydb:flyway-core'
+    }
+}
+
+project(authenticationRedisAdapterModule) {
+    dependencies {
+        implementation commonProject
+        implementation jpaCoreProject
+        implementation project(authenticationApplicationModule)
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // Map Struct
+        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+        annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+        //redis
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    }
+}
+
+project(authenticationWebAdapterModule) {
+    dependencies {
+        implementation commonProject
+        implementation project(authenticationApplicationModule)
+        implementation project(authenticationReadModelsModule)
+        implementation 'jakarta.servlet:jakarta.servlet-api'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // Map Struct
+        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+        annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    }
+}
+
+project(authenticationProfileClientAdapterModule) {
+    dependencies {
+        implementation commonProject
+        implementation project(authenticationApplicationModule)
+        implementation project(memberProfileDomainModule)
+
+        // Map Struct
+        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+        annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+        // Feign Client
+        implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.0")
+        implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    }
+}
+
+project(authenticationDomainModule) {
+    dependencies {
+        implementation commonProject
+    }
+}
+
+project(authenticationExceptionModule) {
+    dependencies {
+        implementation commonProject
+    }
+}
+
+project(authenticationReadModelsModule) {
+    dependencies {
+        implementation commonProject
+        implementation project(authenticationDomainModule)
+    }
+}
+
+// ====================================================================================================== Member Profile
+
+project(memberProfileServiceModule) { // <<< 실행 애플리케이션 있는 모듈. 스캔 대상은 모두 여기 의존성에 추가.
+    dependencies {
+        implementation commonProject
+        implementation project(healthCheckModule)
+
+        implementation project(memberProfileDomainModule)
+        implementation project(memberProfileReadModelsModule)
+        implementation project(memberProfileExceptionModule)
+        implementation project(memberProfileApplicationModule)
+        implementation project(memberProfileRdbAdapterModule)
+        implementation project(memberProfileWebAdapterModule)
+
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // Consul
+        implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.0")
+        implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+    }
+
+    bootJar {
+        enabled = true
+    }
+}
+
+project(memberProfileApplicationModule) {
+    dependencies {
+        implementation commonProject
+        api project(memberProfileDomainModule)
+        api project(memberProfileExceptionModule)
+        api project(memberProfileReadModelsModule)
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // password encoder
+        implementation 'org.springframework.security:spring-security-crypto'
+
+        // jwt
+        implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+        implementation 'io.jsonwebtoken:jjwt-gson:0.11.5'
+    }
+}
+
+project(memberProfileRdbAdapterModule) {
+    dependencies {
+        implementation commonProject
+        implementation jpaCoreProject
+        implementation project(memberProfileApplicationModule)
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        runtimeOnly 'org.postgresql:postgresql'
+
+        // Map Struct
+        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+        annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+        // Flyway
+        implementation 'org.flywaydb:flyway-core'
+    }
+}
+
+project(memberProfileWebAdapterModule) {
+    dependencies {
+        implementation commonProject
+        implementation project(memberProfileApplicationModule)
+        implementation project(memberProfileReadModelsModule)
+        implementation 'jakarta.servlet:jakarta.servlet-api'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // Map Struct
+        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+        annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    }
+}
+
+project(memberProfileDomainModule) {
+    dependencies {
+        implementation commonProject
+    }
+}
+
+project(memberProfileExceptionModule) {
+    dependencies {
+        implementation commonProject
+    }
+}
+
+project(memberProfileReadModelsModule) {
+    dependencies {
+        implementation commonProject
+        implementation project(memberProfileDomainModule)
+    }
+}

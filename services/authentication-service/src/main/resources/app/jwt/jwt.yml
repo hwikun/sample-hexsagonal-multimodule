@@ -1,0 +1,5 @@
+app:
+  security:
+    jwt:
+      secret: ${jwt.secret}
+      ttl: 1_800_000 # [Millis]

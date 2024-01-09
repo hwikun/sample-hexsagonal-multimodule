@@ -1,0 +1,12 @@
+app:
+  cors:
+    max-age: 1800
+    exposed-headers: "*"
+    log-level: info
+    allows-credentials: true
+    allowed:
+      methods: "*"
+      headers: "*"
+      origins:
+        - http://localhost:3000
+        - https://localhost:3000
