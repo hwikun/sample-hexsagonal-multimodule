@@ -2,11 +2,13 @@ package com.example.auth.web.controller;
 
 import com.example.auth.application.data.Tokens;
 import com.example.auth.domain.types.AccountStatus;
+import com.example.auth.web.dto.AuthenticationDto.ChangePwRequestDto;
+import com.example.auth.web.dto.AuthenticationDto.ChangePwResponseDto;
 import com.example.auth.web.dto.AuthenticationDto.SignInRequestDto;
 import com.example.auth.web.dto.AuthenticationDto.SignInResponseDto;
 import com.example.auth.web.dto.AuthenticationDto.SignUpRequestDto;
 import com.example.auth.web.dto.AuthenticationDto.SignUpResponseDto;
-import com.example.auth.web.service.DefaultAuthenticationProxyService;
+import com.example.auth.web.service.AuthenticationProxyService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,7 +29,7 @@ import java.time.Instant;
 @RequestMapping("api/auth")
 public final class AuthenticationApi {
 
-    private final DefaultAuthenticationProxyService authenticationProxyService;
+    private final AuthenticationProxyService authenticationProxyService;
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED) // 201
@@ -60,6 +62,15 @@ public final class AuthenticationApi {
 
         return SignInResponseDto.builder()
                 .accessToken(tokens.accessToken())
+                .build();
+    }
+
+    @PostMapping("/change-password")
+    public ChangePwResponseDto changePassword(@RequestBody @Valid ChangePwRequestDto dto) {
+        boolean isSuccess = authenticationProxyService.changePassword(dto);
+
+        return ChangePwResponseDto.builder()
+                .isSuccess(isSuccess)
                 .build();
     }
 }

@@ -8,3 +8,5 @@ alive: 943daa0a57c4 192.168.0.5:8301
 event-clock: 4
 alive: 943daa0a57c4 192.168.0.3:8301
 event-clock: 5
+alive: 1dd18bec7b6b 192.168.0.2:8301
+event-clock: 6

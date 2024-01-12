@@ -38,10 +38,8 @@ include 'services:authentication-service:driven-adapters:authentication-redis-ad
 findProject(':services:authentication-service:driven-adapters:authentication-redis-adapter')?.name = 'authentication-redis-adapter'
 findProject(':services:authentication-service:driving-adapters')?.name = 'driving-adapters'
 findProject(':services:authentication-service:driving-adapters:authentication-web-adapter')?.name = 'authentication-web-adapter'
-include 'services:authentication-service:client-adapters'
-findProject(':services:authentication-service:client-adapters')?.name = 'client-adapters'
-include 'services:authentication-service:client-adapters:memberprofile-client-adapter'
-findProject(':services:authentication-service:client-adapters:memberprofile-client-adapter')?.name = 'memberprofile-client-adapter'
+include 'services:authentication-service:driven-adapters:memberprofile-client-adapter'
+findProject(':services:authentication-service:driven-adapters:memberprofile-client-adapter')?.name = 'memberprofile-client-adapter'
 
 include 'services:member-profile-service'
 findProject(':services:member-profile-service')?.name = 'member-profile-service'

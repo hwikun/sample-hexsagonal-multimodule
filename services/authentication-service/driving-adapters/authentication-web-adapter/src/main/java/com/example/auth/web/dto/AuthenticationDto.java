@@ -48,4 +48,21 @@ public final class AuthenticationDto {
 
 
     ) {}
+
+    @Builder
+    public record ChangePwRequestDto(
+            @NotBlank
+            String username,
+            @NotBlank
+            String newPassword,
+
+            @NotBlank
+            String confirmPassword
+    ) {}
+
+    @Builder
+    public record ChangePwResponseDto(
+
+            boolean isSuccess
+    ) {}
 }

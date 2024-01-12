@@ -164,9 +164,6 @@ project(authenticationServiceModule) { // <<< 실행 애플리케이션 있는 �
         // Spring Cloud dependency-management
         implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.0")
 
-        // Feign Client TODO 모듈화
-        implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-
         // Consul
         implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
     }
@@ -188,6 +185,9 @@ project(authenticationApplicationModule) {
 
         // password encoder
         implementation 'org.springframework.security:spring-security-crypto'
+
+        // jBcrypt
+        implementation 'org.mindrot:jbcrypt:0.4'
 
         // jwt
         implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -300,8 +300,10 @@ project(memberProfileServiceModule) { // <<< 실행 애플리케이션 있는 �
         implementation 'org.springframework.boot:spring-boot-starter-web'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-        // Consul
+        // Spring Cloud dependency-management
         implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.0")
+
+        // Consul
         implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
     }
 
@@ -317,13 +319,6 @@ project(memberProfileApplicationModule) {
         api project(memberProfileExceptionModule)
         api project(memberProfileReadModelsModule)
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-        // password encoder
-        implementation 'org.springframework.security:spring-security-crypto'
-
-        // jwt
-        implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-        implementation 'io.jsonwebtoken:jjwt-gson:0.11.5'
     }
 }
 
