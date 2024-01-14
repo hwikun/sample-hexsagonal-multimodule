@@ -8,4 +8,8 @@ public interface PasswordHistoryRepository {
     PwHistory save(String accountId, String password);
 
     Optional<PwHistory> findByPassword(String password);
+
+    int countAllByPassword(String password);
+
+    boolean existsByPassword(String password);
 }

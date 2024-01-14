@@ -21,7 +21,6 @@ public class ProfileClientService implements ProfileClientRepository {
     @Override
     public void createProfile(Account account) {
         CreateProfileClientRequestDto dto = mapper.toDto(account);
-        // TODO OpenFeign Client 으로 API CALL
         client.save(dto);
     }
 }

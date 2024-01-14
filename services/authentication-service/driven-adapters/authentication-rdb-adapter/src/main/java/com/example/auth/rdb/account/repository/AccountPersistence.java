@@ -44,4 +44,9 @@ public class AccountPersistence implements AccountRepository { // Adapter
                 .findAuthenticationInfoByUsername(username) // Optional<Projection>
                 .map(mapper::toReadModel); // Optional<ReadModel>
     }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return accountJpaRepository.existsByUsername(username);
+    }
 }

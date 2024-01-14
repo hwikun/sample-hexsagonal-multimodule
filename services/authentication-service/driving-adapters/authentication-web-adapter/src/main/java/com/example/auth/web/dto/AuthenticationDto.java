@@ -54,10 +54,7 @@ public final class AuthenticationDto {
             @NotBlank
             String username,
             @NotBlank
-            String newPassword,
-
-            @NotBlank
-            String confirmPassword
+            String newPassword
     ) {}
 
     @Builder

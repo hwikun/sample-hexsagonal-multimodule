@@ -9,11 +9,18 @@ spring:
     import:
       - app/jwt/jwt.yml
       - app/cors/cors.yml
+      - app/jasypt/jasypt.yml
+      - optional:file:.env[.properties]
 
   cloud:
     consul:
       host: localhost
       port: 8500
+#      discovery:
+#        instance-id: ${spring.application.name}:${random.value}
+#        serviceName: myprefix-${spring.application.name}
+#        healthCheckPath: /actuator/health
+#        healthCheckInterval: 15s
 
 
   datasource:

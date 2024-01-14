@@ -5,6 +5,11 @@ spring:
   application:
     name: member-profile
 
+  config:
+    import:
+      - app/jasypt/jasypt.yml
+      - optional:file:.env[.properties]
+
   cloud:
     consul:
       host: localhost

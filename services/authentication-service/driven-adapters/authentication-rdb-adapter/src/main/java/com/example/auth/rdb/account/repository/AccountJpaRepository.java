@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface AccountJpaRepository extends JpaRepository<AccountEntity, UUID> {
     Optional<AccountEntity> findSampleByUsername(String username);
     Optional<AccountAuthenticationProjection> findAuthenticationInfoByUsername(String username);
+    boolean existsByUsername(String username);
 }

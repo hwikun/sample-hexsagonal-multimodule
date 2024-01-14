@@ -53,13 +53,14 @@ services:
   example_consul:
     image: consul:1.15.4
     ports:
-      - 8500:8500
+      - "8501:8500"
     volumes:
       - ./config/consul/consul.conf:/config
       - ./config/consul/data:/data
     command: agent -server -data-dir=/data -bind 0.0.0.0 -client 0.0.0.0 -bootstrap-expect=1
     restart: on-failure
-
+    environment:
+      CONSUL_LOCAL_CONFIG: '{"ui_config":{"enabled":true}, "connect": {"enabled": true}}'
 
 volumes:
   sticky_volume_auth_postgres:

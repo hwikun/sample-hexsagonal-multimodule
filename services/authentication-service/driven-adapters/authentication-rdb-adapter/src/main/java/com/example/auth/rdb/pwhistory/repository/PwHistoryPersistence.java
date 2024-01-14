@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -16,19 +15,13 @@ import java.util.Optional;
 @Transactional
 public class PwHistoryPersistence implements PasswordHistoryRepository {
 
-    private final PwHistoryJpaRepository repository;
+    private final PwHistoryJpaRepository pwHistoryJpaRepository;
     private final PwHistoryEntityMapper pwHistoryEntityMapper;
 
+    // save면 save만 구현. 나머지 제약 사항은 service에서.
     @Override
     public PwHistory save(String accountId, String password) {
-        // 히스토리 존재 여부 확인
-        List<PwHistoryEntity> entityList = repository.findAllByAccountId(accountId);
-        // 유저별 히스토리 최대 100개. 넘어가면 제일 오래된 히스토리 삭제
-        if (entityList.size() > 100) {
-            repository.delete(entityList.get(0));
-        }
-        // 히스토리 저장
-        PwHistoryEntity savedEntity = repository.save(PwHistoryEntity.builder()
+        PwHistoryEntity savedEntity = pwHistoryJpaRepository.save(PwHistoryEntity.builder()
                 .accountId(accountId)
                 .password(password)
                 .build());
@@ -37,8 +30,17 @@ public class PwHistoryPersistence implements PasswordHistoryRepository {
 
     @Override
     public Optional<PwHistory> findByPassword(String password) {
-        return repository.findByPassword(password)
+        return pwHistoryJpaRepository.findByPassword(password)
                 .map(pwHistoryEntityMapper::toDomain);
+    }
 
+    @Override
+    public int countAllByPassword(String password) {
+        return pwHistoryJpaRepository.countAllByPassword(password);
+    }
+
+    @Override
+    public boolean existsByPassword(String password) {
+        return pwHistoryJpaRepository.existsByPassword(password);
     }
 }

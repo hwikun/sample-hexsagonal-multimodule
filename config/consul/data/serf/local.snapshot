@@ -10,3 +10,27 @@ alive: 943daa0a57c4 192.168.0.3:8301
 event-clock: 5
 alive: 1dd18bec7b6b 192.168.0.2:8301
 event-clock: 6
+alive: f1af9736e2b3 172.20.0.4:8301
+event-clock: 7
+alive: 2865a1e4bb57 172.21.0.3:8301
+event-clock: 8
+alive: a766d4ec2990 172.22.0.3:8301
+event-clock: 9
+alive: b70e53580a0e 172.23.0.2:8301
+event-clock: 10
+alive: b70e53580a0e 172.23.0.3:8301
+event-clock: 11
+alive: da849131d18c 172.20.0.5:8301
+event-clock: 12
+alive: 6b9a34bed907 172.21.0.3:8301
+event-clock: 13
+alive: 692ebf3be440 172.22.0.3:8301
+event-clock: 14
+alive: 9528bbab68fd 172.23.0.4:8301
+event-clock: 15
+alive: ef112369c1ed 172.24.0.5:8301
+event-clock: 16
+alive: 772f0e5c0137 172.25.0.4:8301
+event-clock: 17
+alive: fd97d94a954e 172.26.0.5:8301
+event-clock: 18

@@ -10,6 +10,10 @@ import java.util.UUID;
 public interface PwHistoryJpaRepository extends JpaRepository<PwHistoryEntity, UUID> {
     Optional<PwHistoryEntity> findByAccountId(String accountId);
     List<PwHistoryEntity> findAllByAccountId(String accountId);
-
     Optional<PwHistoryEntity> findByPassword(String password);
+    int countAllByPassword(String password);
+
+    boolean existsByPassword(String password);
+
+    int countByAccountId(String accountId);
 }

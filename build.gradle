@@ -139,6 +139,20 @@ project(healthCheckModule) {
     }
 }
 
+project(exeTimerCoreModule) {
+    dependencies {
+        implementation commonProject
+        implementation 'org.springframework.boot:spring-boot-starter-aop'
+    }
+}
+
+project(jasyptCoreModule) {
+    dependencies {
+        implementation commonProject
+        api 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+    }
+}
+
 // ====================================================================================================== Authentication
 
 project(authenticationServiceModule) { // <<< 실행 애플리케이션 있는 모듈. 스캔 대상은 모두 여기 의존성에 추가.
@@ -148,6 +162,7 @@ project(authenticationServiceModule) { // <<< 실행 애플리케이션 있는 �
         implementation project(secureRandomModule)
         implementation project(webMvcCorsConfigModule)
         implementation project(healthCheckModule)
+        implementation project(jasyptCoreModule)
 
         implementation project(authenticationDomainModule)
         implementation project(authenticationReadModelsModule)
@@ -234,6 +249,7 @@ project(authenticationRedisAdapterModule) {
 project(authenticationWebAdapterModule) {
     dependencies {
         implementation commonProject
+        implementation project(exeTimerCoreModule)
         implementation project(authenticationApplicationModule)
         implementation project(authenticationReadModelsModule)
         implementation 'jakarta.servlet:jakarta.servlet-api'
@@ -289,13 +305,14 @@ project(memberProfileServiceModule) { // <<< 실행 애플리케이션 있는 �
     dependencies {
         implementation commonProject
         implementation project(healthCheckModule)
+        implementation project(jasyptCoreModule)
 
         implementation project(memberProfileDomainModule)
         implementation project(memberProfileReadModelsModule)
         implementation project(memberProfileExceptionModule)
         implementation project(memberProfileApplicationModule)
         implementation project(memberProfileRdbAdapterModule)
-        implementation project(memberProfileWebAdapterModule)
+        implementation project(memberProfileInternalApiAdapterModule)
 
         implementation 'org.springframework.boot:spring-boot-starter-web'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -341,9 +358,10 @@ project(memberProfileRdbAdapterModule) {
     }
 }
 
-project(memberProfileWebAdapterModule) {
+project(memberProfileInternalApiAdapterModule) {
     dependencies {
         implementation commonProject
+        implementation project(exeTimerCoreModule)
         implementation project(memberProfileApplicationModule)
         implementation project(memberProfileReadModelsModule)
         implementation 'jakarta.servlet:jakarta.servlet-api'

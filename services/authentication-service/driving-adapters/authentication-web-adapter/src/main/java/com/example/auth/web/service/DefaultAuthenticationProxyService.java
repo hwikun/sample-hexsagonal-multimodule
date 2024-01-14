@@ -43,9 +43,7 @@ public final class DefaultAuthenticationProxyService implements AuthenticationPr
 
     @Override
     public boolean changePassword(ChangePwRequestDto dto) {
-        if (!dto.newPassword().equals(dto.confirmPassword())) {
-            return false;
-        }
+
         return changePwUseCase.changePassword(dto.username(), dto.newPassword());
     }
 

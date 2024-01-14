@@ -10,4 +10,5 @@ public interface AccountRepository {
     Optional<Account> findByUsername(String username);
     Optional<AccountAuthenticationReadModel> findAuthenticationByUsername(String username);
     // ...
+    boolean existsByUsername(String username);
 }
