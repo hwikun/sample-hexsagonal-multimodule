@@ -8,6 +8,15 @@ public final class ProfileReadModels {
     @Builder
     public record ProfileListViewReadModel() {}
 
+    @Builder
+    public record ProfileDetailedViewReadModel(
+            String id,
+            String accountId,
+            String username,
+            String birth,
+            String gender,
+            String nickname
+    ) {}
 
 
 }
