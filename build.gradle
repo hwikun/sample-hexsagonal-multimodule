@@ -191,8 +191,8 @@ project(authenticationServiceModule) { // <<< 실행 애플리케이션 있는 �
 project(authenticationApplicationModule) {
     dependencies {
         implementation commonProject
-        api project(secureRandomModule)
-        api project(jwtProviderCoreModule)
+        implementation project(secureRandomModule)
+        implementation project(jwtProviderCoreModule)
         api project(authenticationDomainModule)
         api project(authenticationExceptionModule)
         api project(authenticationReadModelsModule)

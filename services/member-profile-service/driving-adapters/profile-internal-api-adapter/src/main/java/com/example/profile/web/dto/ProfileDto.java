@@ -17,7 +17,50 @@ public final class ProfileDto {
     @Builder
     public record CreateProfileResponseDto(
             boolean isSuccess
-    ) {
+    ) {}
 
-    }
+    @Builder
+    public record GetProfileRequestDto(
+
+    ) {}
+
+    @Builder
+    public record GetProfileResponseDto(
+        String id,
+        String accountId,
+        String username,
+        String gender,
+        String birth,
+        String nickname
+    ) {}
+
+    @Builder
+    public record GetProfileListRequestDto(
+
+    ) {}
+
+    @Builder
+    public record GetProfileListResponseDto(
+
+    ) {}
+
+    @Builder
+    public record UpdateProfileResponseDto(
+        boolean isSuccess
+    ) {}
+
+    @Builder
+    public record UpdateProfileRequestDto(
+
+    ) {}
+
+    @Builder
+    public record DeleteProfileRequestDto(
+
+    ) {}
+
+    @Builder
+    public record DeleteProfileResponseDto(
+        boolean isSuccess
+    ) {}
 }

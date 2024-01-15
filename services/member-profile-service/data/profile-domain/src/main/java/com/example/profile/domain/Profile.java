@@ -18,7 +18,7 @@ public class Profile implements Serializable {
     private String id;
     public String accountId;
     public String username;
-    public String nickname;
-    public Gender gender;
     public String birth;
+    public Gender gender;
+    public String nickname;
 }

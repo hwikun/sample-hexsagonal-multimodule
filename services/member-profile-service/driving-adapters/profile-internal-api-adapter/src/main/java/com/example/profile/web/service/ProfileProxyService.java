@@ -1,26 +1,22 @@
 package com.example.profile.web.service;
 
-import com.example.profile.application.usecase.CreateProfileUseCase;
 import com.example.profile.domain.Profile;
 import com.example.profile.web.dto.ProfileDto.CreateProfileRequestDto;
-import com.example.profile.web.mapper.ProfileDtoMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.example.profile.web.dto.ProfileDto.DeleteProfileRequestDto;
+import com.example.profile.web.dto.ProfileDto.GetProfileListRequestDto;
+import com.example.profile.web.dto.ProfileDto.GetProfileListResponseDto;
+import com.example.profile.web.dto.ProfileDto.GetProfileRequestDto;
+import com.example.profile.web.dto.ProfileDto.GetProfileResponseDto;
+import com.example.profile.web.dto.ProfileDto.UpdateProfileRequestDto;
 
-@Service
-@RequiredArgsConstructor
-@Slf4j
-public class ProfileProxyService implements DefaultProfileProxyService {
+public interface ProfileProxyService {
+    Profile createProfile(CreateProfileRequestDto dto);
 
-    private final ProfileDtoMapper mapper;
-    private final CreateProfileUseCase createProfileUseCase;
+    GetProfileResponseDto getProfile(GetProfileRequestDto dto);
 
+    GetProfileListResponseDto getProfileList(GetProfileListRequestDto dto);
 
-    @Override
-    public Profile createProfile(CreateProfileRequestDto dto) {
-        Profile profile = mapper.toDomain(dto);
-        log.debug("profile: {}", profile);
-        return createProfileUseCase.createProfile(profile);
-    }
+    void updateProfile(UpdateProfileRequestDto dto);
+
+    void deleteProfile(DeleteProfileRequestDto dto);
 }
